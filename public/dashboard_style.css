@@ -1,0 +1,57 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    background: url('https://million-wallpapers.ru/wallpapers/3/62/472488580412863/ara-bett-rylymy.jpg') no-repeat;
+}
+
+header {
+    color: white;
+    padding: 1em;
+    text-align: center;
+}
+
+h2{
+    color:#fff;
+    margin-left: 30rem;
+}
+
+nav {
+    text-align: center;
+    margin-top: 1em;
+}
+
+nav a {
+    text-decoration: none;
+    padding: 0.5em 1em;
+    display: inline-block;
+    margin: 0 0.5em;
+    background: white;
+    border-radius: 0.3em;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    color:#000;
+}
+.center-content {
+    padding: 2em;
+}
+.container {
+    max-width: 960px;
+    margin: auto;
+}
+.carousel-item img {
+    max-height: 500px;
+    width: auto;
+    display: block;
+    margin: auto;
+}
+.carousel-caption {
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border-radius: 0.3em;
+    padding: 0.5em;
+}

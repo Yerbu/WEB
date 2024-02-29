@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Agency</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/routes/travelRoutes.js"></script>
+
+    <style>
+        /* Additional styles for icons and images */
+        .weather-icon {
+            width: 50px;
+            height: 50px;
+        }
+
+        .text-container {
+            flex: 1;
+            padding-right: 20px;
+            /* Adjust as needed to create space between text and image */
+        }
+
+        .weather-info i {
+            font-size: 2em;
+            margin-right: 10px;
+        }
+
+        .city-image {
+            max-width: 30%;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .city-image-container {
+            text-align: center;
+        }
+
+        .city-image-error {
+            font-size: 2em;
+            color: #ccc;
+        }
+
+        .city-image:hover {
+            transform: scale(1.1);
+        }
+
+        /* Additional styles for tours */
+        .tour {
+            display: flex;
+            align-items: center;
+            /* Center items vertically */
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            margin-top: 20px;
+            padding: 20px;
+        }
+
+        .tour-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .tour-price {
+            font-size: 1.2em;
+            color: #007bff;
+        }
+
+        .tour-info {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">Travel Agency</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/travelagency">Travel Agency</a>
+                </li>
+            </ul>
+            <button class="btn btn-primary" onclick="viewHistory()">View History</button>
+            <nav>
+                <a href="/logout">Logout</a>
+            </nav>
+        </div>
+    </nav>
+
+    <div class="modal fade" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="historyModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="historyModalLabel">History</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="historyModalBody">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">Explore Our Tours</h1>
+                <p class="card-text">Choose from a variety of destinations and plan your perfect getaway.</p>
+
+
+                <form id="travelAgencyForm">
+                    <div class="form-group">
+                        <label for="cityDropdown">Select City:</label>
+                        <select id="cityDropdown" class="form-control" onchange="showTour()">
+                            <option value="Astana">Astana</option>
+                            <option value="London">London</option>
+                            <option value="New York">New York</option>
+                            <option value="Tokyo">Tokyo</option>
+                            <option value="Sydney">Sydney</option>
+                        </select>
+                    </div>
+
+                </form>
+
+                <div class="mt-4" id="weather-info" style="display: none;">
+                    <h2>Weather Information</h2>
+                    <div class="weather-info">
+                        <p><i class="fas fa-thermometer-half"></i> Temperature: <span
+                                id="weather-temperature"></span>&deg;C</p>
+                        <p><i class="fas fa-cloud"></i> Weather Conditions: <span id="weather-conditions"></span></p>
+                    </div>
+                </div>
+
+                <div class="tours-container mt-4">
+
+                </div>
+
+                <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog"
+                    aria-labelledby="bookingModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="bookingModalLabel">Book Now</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="adultsQuantity">Number of Adults:</label>
+                                        <input type="number" class="form-control" id="adultsQuantity" min="0" value="0"
+                                            oninput="updateTotalPrice()" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="childrenQuantity">Number of Children:</label>
+                                        <input type="number" class="form-control" id="childrenQuantity" min="0"
+                                            value="0" oninput="updateTotalPrice()" required>
+                                    </div>
+                                    <label for="departureDate">Departure Date:</label>
+                                    <input type="date" class="form-control" id="departureDate" name="departureDate"
+                                        required>
+                                    <br>
+                                    <label for="phoneNumber">Phone Number:</label>
+                                    <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" required>
+
+                                </form>
+                                <hr>
+                                <p>Total Price: <span id="totalPrice"></span></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" onclick="confirmBooking()">Confirm
+                                    Booking</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-3">
+        <p>&copy; 2024 Erbulan Serikzhanov | Group: SE-2209</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
